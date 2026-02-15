@@ -168,6 +168,47 @@ button {
   gap: 6px;
 }
 
+.rating {
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+}
+
+.rating-title {
+  margin: 0 0 8px;
+  font-size: 0.84rem;
+  color: var(--sub);
+  font-weight: 600;
+}
+
+.rating-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.rating-btn {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  min-height: 40px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  padding: 8px 10px;
+}
+
+.rating-btn.active {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.rating-state {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
 .nutrition {
   margin: 0;
   border-top: 1px dashed var(--line);
@@ -254,6 +295,10 @@ button {
     padding: 12px;
   }
 
+  .rating-actions {
+    grid-template-columns: 1fr;
+  }
+
   .nutrition {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 6px;
@@ -261,7 +306,8 @@ button {
 
   input,
   select,
-  button {
+  button,
+  .rating-btn {
     min-height: 44px;
   }
 }

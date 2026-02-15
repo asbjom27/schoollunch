@@ -9,8 +9,15 @@ const monthTabs = document.getElementById("monthTabs");
 const pdfLink = document.getElementById("pdfLink");
 
 const STORE_KEY = "school-lunch-selected-menu";
+const RATING_STORE_KEY = "school-lunch-ratings";
+const RATING_OPTIONS = [
+  { value: "good", label: "Like" },
+  { value: "bad", label: "Unlike" },
+];
+
 let menus = [];
 let selectedMenuId = "";
+let ratings = {};
 
 function normalizeText(value) {
   return String(value).toLowerCase().replace(/[\s　]+/g, "");
@@ -31,6 +38,33 @@ function formatMenuLabel(menu) {
 
 function getSelectedMenu() {
   return menus.find((menu) => menu.id === selectedMenuId) || menus[0] || null;
+}
+
+function getRatingKey(menuId, day) {
+  return `${menuId}:${day}`;
+}
+
+function getRatingLabel(ratingValue) {
+  if (ratingValue === "good") return "Like";
+  if (ratingValue === "bad") return "Unlike";
+  return "Not rated";
+}
+
+function loadRatings() {
+  try {
+    const raw = localStorage.getItem(RATING_STORE_KEY);
+    ratings = raw ? JSON.parse(raw) : {};
+  } catch {
+    ratings = {};
+  }
+}
+
+function saveRatings() {
+  try {
+    localStorage.setItem(RATING_STORE_KEY, JSON.stringify(ratings));
+  } catch {
+    // ignore storage error
+  }
 }
 
 function renderMonthTabs() {
@@ -56,7 +90,49 @@ function renderMonthTabs() {
   monthTabs.appendChild(fragment);
 }
 
-function renderCards(items, totalCount) {
+function renderRatingSection(container, stateElement, menuId, day) {
+  const key = getRatingKey(menuId, day);
+  const current = ratings[key] || "";
+
+  container.innerHTML = "";
+
+  for (const option of RATING_OPTIONS) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "rating-btn";
+    button.dataset.value = option.value;
+    button.textContent = option.label;
+    button.setAttribute("aria-pressed", String(current === option.value));
+    if (current === option.value) button.classList.add("active");
+
+    button.addEventListener("click", () => {
+      const prev = ratings[key] || "";
+      const next = prev === option.value ? "" : option.value;
+
+      if (next) {
+        ratings[key] = next;
+      } else {
+        delete ratings[key];
+      }
+
+      saveRatings();
+
+      for (const btn of container.querySelectorAll(".rating-btn")) {
+        const isActive = btn.dataset.value === next;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      }
+
+      stateElement.textContent = getRatingLabel(next);
+    });
+
+    container.appendChild(button);
+  }
+
+  stateElement.textContent = getRatingLabel(current);
+}
+
+function renderCards(items, totalCount, menuId) {
   menuGrid.innerHTML = "";
 
   if (items.length === 0) {
@@ -80,6 +156,10 @@ function renderCards(items, totalCount) {
       li.textContent = dish;
       dishList.appendChild(li);
     }
+
+    const ratingActions = card.querySelector(".rating-actions");
+    const ratingState = card.querySelector(".rating-state");
+    renderRatingSection(ratingActions, ratingState, menuId, item.day);
 
     card.querySelector(".calorie").textContent = `${item.calories} kcal`;
     card.querySelector(".protein").textContent = `${Number(item.protein).toFixed(1)} g`;
@@ -112,7 +192,7 @@ function applyFilter() {
     return target.includes(keyword);
   });
 
-  renderCards(filtered, selectedMenu.items.length);
+  renderCards(filtered, selectedMenu.items.length, selectedMenu.id);
 }
 
 function renderHeaderAndSource() {
@@ -157,6 +237,7 @@ resetButton.addEventListener("click", () => {
 
 (async () => {
   try {
+    loadRatings();
     await loadMenus();
     renderMonthTabs();
     renderHeaderAndSource();
