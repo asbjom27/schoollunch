@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2月給食献立ビューアー（A献立）</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="kicker">亀岡市立学校給食センター</p>
+      <h1>2月 給食献立ビューアー（A献立）</h1>
+      <p class="subtitle">日付・料理名で探しやすく、栄養値もすぐ確認できます。</p>
+    </header>
+
+    <main class="container">
+      <section class="controls" aria-label="検索・絞り込み">
+        <label class="control">
+          <span>料理名検索</span>
+          <input id="searchInput" type="search" placeholder="例: カレー / みそしる / スパゲティ" />
+        </label>
+
+        <label class="control">
+          <span>曜日で絞り込み</span>
+          <select id="weekdaySelect">
+            <option value="">すべて</option>
+            <option value="月">月</option>
+            <option value="火">火</option>
+            <option value="水">水</option>
+            <option value="木">木</option>
+            <option value="金">金</option>
+          </select>
+        </label>
+
+        <button id="resetButton" type="button">条件をリセット</button>
+      </section>
+
+      <section class="summary" aria-live="polite">
+        <p><strong id="resultCount"></strong></p>
+      </section>
+
+      <section>
+        <div id="menuGrid" class="menu-grid"></div>
+      </section>
+
+      <section class="source">
+        <h2>元データ</h2>
+        <p>PDF原本も確認できます。</p>
+        <a href="menu-source.pdf" target="_blank" rel="noopener noreferrer">給食2月こんだて（A献立）PDFを開く</a>
+      </section>
+    </main>
+
+    <template id="menuCardTemplate">
+      <article class="card">
+        <header class="card-head">
+          <h2 class="date"></h2>
+          <span class="weekday"></span>
+        </header>
+
+        <p class="staple"></p>
+
+        <ul class="dishes"></ul>
+
+        <dl class="nutrition">
+          <div>
+            <dt>エネルギー</dt>
+            <dd class="calorie"></dd>
+          </div>
+          <div>
+            <dt>たんぱく質</dt>
+            <dd class="protein"></dd>
+          </div>
+          <div>
+            <dt>塩分量</dt>
+            <dd class="salt"></dd>
+          </div>
+        </dl>
+      </article>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
