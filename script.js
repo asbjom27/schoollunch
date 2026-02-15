@@ -1,185 +1,67 @@
-const menuData = [
-  {
-    day: 2,
-    weekday: "月",
-    staple: "ごはん",
-    dishes: ["ちくぜんに", "あったかじる"],
-    calories: 553,
-    protein: 26.1,
-    salt: 2.3,
-  },
-  {
-    day: 3,
-    weekday: "火",
-    staple: "ごはん",
-    dishes: ["とりにくとさといものにつけ", "もやしとじゃこのごまいため", "ふくまめ"],
-    calories: 604,
-    protein: 25.7,
-    salt: 1.5,
-  },
-  {
-    day: 4,
-    weekday: "水",
-    staple: "ごはん",
-    dishes: ["しろみざかなフライのチリソースかけ", "カラフルスープ"],
-    calories: 560,
-    protein: 22.1,
-    salt: 1.5,
-  },
-  {
-    day: 5,
-    weekday: "木",
-    staple: "コッペパン",
-    dishes: ["だいずのミートソースに", "フレンチサラダ"],
-    calories: 627,
-    protein: 26.7,
-    salt: 3.3,
-  },
-  {
-    day: 6,
-    weekday: "金",
-    staple: "ごはん",
-    dishes: ["だいこんごはん", "ほうれんそうオムレツ", "ぶたじる"],
-    calories: 567,
-    protein: 23.3,
-    salt: 2.3,
-  },
-  {
-    day: 9,
-    weekday: "月",
-    staple: "ごはん",
-    dishes: ["とりにくのさんしょくに", "キャベツのみそしる"],
-    calories: 611,
-    protein: 23.9,
-    salt: 2.5,
-  },
-  {
-    day: 10,
-    weekday: "火",
-    staple: "ごはん",
-    dishes: ["いわしのしょうがに", "はりはりなべ"],
-    calories: 632,
-    protein: 31.3,
-    salt: 1.6,
-  },
-  {
-    day: 12,
-    weekday: "木",
-    staple: "あじつけコッペパン",
-    dishes: ["ハヤシシチュー", "さわやかソテー"],
-    calories: 662,
-    protein: 25.1,
-    salt: 3.3,
-  },
-  {
-    day: 13,
-    weekday: "金",
-    staple: "ごはん",
-    dishes: ["ちゅうかどんぶり", "あげはるまき"],
-    calories: 646,
-    protein: 20.6,
-    salt: 1.3,
-  },
-  {
-    day: 16,
-    weekday: "月",
-    staple: "ごはん",
-    dishes: ["おでん", "うめふうみあえ"],
-    calories: 561,
-    protein: 23.8,
-    salt: 2.1,
-  },
-  {
-    day: 17,
-    weekday: "火",
-    staple: "ごはん",
-    dishes: ["さばのしおやき", "ひじきまめ", "ふゆやさいのうすくずじる"],
-    calories: 602,
-    protein: 26.5,
-    salt: 2.2,
-  },
-  {
-    day: 18,
-    weekday: "水",
-    staple: "ごはん",
-    dishes: ["マーボーだいこん", "もやしのいためナムル"],
-    calories: 524,
-    protein: 19.1,
-    salt: 2.0,
-  },
-  {
-    day: 19,
-    weekday: "木",
-    staple: "ミルクコッペパン",
-    dishes: ["とりにくのトマトサルサに", "ポトフ"],
-    calories: 651,
-    protein: 27.4,
-    salt: 2.2,
-  },
-  {
-    day: 20,
-    weekday: "金",
-    staple: "ごはん",
-    dishes: ["ごまとうにゅうなべ", "くきわかめのきんぴら"],
-    calories: 565,
-    protein: 24.4,
-    salt: 2.4,
-  },
-  {
-    day: 24,
-    weekday: "火",
-    staple: "ごはん",
-    dishes: ["だいこんカレー", "フルーツポンチ"],
-    calories: 641,
-    protein: 20.4,
-    salt: 1.4,
-  },
-  {
-    day: 25,
-    weekday: "水",
-    staple: "ごはん",
-    dishes: ["はまちのたつたあげ", "おかかいため", "みそしる"],
-    calories: 616,
-    protein: 28.0,
-    salt: 2.0,
-  },
-  {
-    day: 26,
-    weekday: "木",
-    staple: "こがたコッペパン・スパゲティ",
-    dishes: ["わふうスパゲティ（きざみのりつき）", "レモンサラダ"],
-    calories: 523,
-    protein: 24.4,
-    salt: 1.9,
-  },
-  {
-    day: 27,
-    weekday: "金",
-    staple: "ごはん",
-    dishes: ["だいこんとさといものそぼろに", "もやしのこうみいため"],
-    calories: 534,
-    protein: 20.5,
-    salt: 1.7,
-  },
-];
-
+const pageTitle = document.getElementById("pageTitle");
 const menuGrid = document.getElementById("menuGrid");
 const cardTemplate = document.getElementById("menuCardTemplate");
 const searchInput = document.getElementById("searchInput");
 const weekdaySelect = document.getElementById("weekdaySelect");
 const resultCount = document.getElementById("resultCount");
 const resetButton = document.getElementById("resetButton");
+const monthTabs = document.getElementById("monthTabs");
+const pdfLink = document.getElementById("pdfLink");
+
+const STORE_KEY = "school-lunch-selected-menu";
+let menus = [];
+let selectedMenuId = "";
 
 function normalizeText(value) {
-  return value.toLowerCase().replace(/[\s　]+/g, "");
+  return String(value).toLowerCase().replace(/[\s　]+/g, "");
 }
 
-function renderCards(items) {
+function sortMenus(items) {
+  return [...items].sort((a, b) => {
+    if (a.month === b.month) {
+      return String(a.course).localeCompare(String(b.course), "ja");
+    }
+    return String(a.month).localeCompare(String(b.month), "ja");
+  });
+}
+
+function formatMenuLabel(menu) {
+  return `${menu.monthLabel} ${menu.course}献立`;
+}
+
+function getSelectedMenu() {
+  return menus.find((menu) => menu.id === selectedMenuId) || menus[0] || null;
+}
+
+function renderMonthTabs() {
+  monthTabs.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  for (const menu of menus) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `month-tab${menu.id === selectedMenuId ? " active" : ""}`;
+    button.textContent = formatMenuLabel(menu);
+    button.addEventListener("click", () => {
+      selectedMenuId = menu.id;
+      localStorage.setItem(STORE_KEY, selectedMenuId);
+      searchInput.value = "";
+      weekdaySelect.value = "";
+      renderMonthTabs();
+      applyFilter();
+    });
+    fragment.appendChild(button);
+  }
+
+  monthTabs.appendChild(fragment);
+}
+
+function renderCards(items, totalCount) {
   menuGrid.innerHTML = "";
 
   if (items.length === 0) {
     menuGrid.innerHTML = '<p class="empty">条件に一致する献立がありません。</p>';
-    resultCount.textContent = "0件";
+    resultCount.textContent = `0件 / 全${totalCount}件`;
     return;
   }
 
@@ -188,7 +70,7 @@ function renderCards(items) {
   for (const item of items) {
     const card = cardTemplate.content.firstElementChild.cloneNode(true);
 
-    card.querySelector(".date").textContent = `2月${item.day}日`;
+    card.querySelector(".date").textContent = `${item.day}日`;
     card.querySelector(".weekday").textContent = item.weekday;
     card.querySelector(".staple").textContent = `主食: ${item.staple}`;
 
@@ -200,21 +82,24 @@ function renderCards(items) {
     }
 
     card.querySelector(".calorie").textContent = `${item.calories} kcal`;
-    card.querySelector(".protein").textContent = `${item.protein.toFixed(1)} g`;
-    card.querySelector(".salt").textContent = `${item.salt.toFixed(1)} g`;
+    card.querySelector(".protein").textContent = `${Number(item.protein).toFixed(1)} g`;
+    card.querySelector(".salt").textContent = `${Number(item.salt).toFixed(1)} g`;
 
     fragment.appendChild(card);
   }
 
   menuGrid.appendChild(fragment);
-  resultCount.textContent = `${items.length}件 / 全${menuData.length}件`;
+  resultCount.textContent = `${items.length}件 / 全${totalCount}件`;
 }
 
 function applyFilter() {
+  const selectedMenu = getSelectedMenu();
+  if (!selectedMenu) return;
+
   const keyword = normalizeText(searchInput.value);
   const weekday = weekdaySelect.value;
 
-  const filtered = menuData.filter((item) => {
+  const filtered = selectedMenu.items.filter((item) => {
     const byWeekday = !weekday || item.weekday === weekday;
     if (!byWeekday) return false;
 
@@ -227,7 +112,39 @@ function applyFilter() {
     return target.includes(keyword);
   });
 
-  renderCards(filtered);
+  renderCards(filtered, selectedMenu.items.length);
+}
+
+function renderHeaderAndSource() {
+  const selectedMenu = getSelectedMenu();
+  if (!selectedMenu) return;
+
+  pageTitle.textContent = selectedMenu.title || formatMenuLabel(selectedMenu);
+  pdfLink.textContent = `${formatMenuLabel(selectedMenu)} のPDFを開く`;
+  pdfLink.href = selectedMenu.pdf || "#";
+}
+
+async function loadMenus() {
+  const response = await fetch("data/menu-data.json", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error("献立データの読み込みに失敗しました。");
+  }
+
+  const json = await response.json();
+  menus = sortMenus(json.menus || []);
+
+  if (menus.length === 0) {
+    throw new Error("献立データが空です。");
+  }
+
+  const savedId = localStorage.getItem(STORE_KEY);
+  selectedMenuId = menus.some((menu) => menu.id === savedId) ? savedId : menus[0].id;
+}
+
+function setError(message) {
+  monthTabs.innerHTML = "";
+  menuGrid.innerHTML = `<p class=\"empty\">${message}</p>`;
+  resultCount.textContent = "-";
 }
 
 searchInput.addEventListener("input", applyFilter);
@@ -238,4 +155,14 @@ resetButton.addEventListener("click", () => {
   applyFilter();
 });
 
-renderCards(menuData);
+(async () => {
+  try {
+    await loadMenus();
+    renderMonthTabs();
+    renderHeaderAndSource();
+    applyFilter();
+  } catch (error) {
+    console.error(error);
+    setError("データの読み込みに失敗しました。ファイル構成を確認してください。");
+  }
+})();

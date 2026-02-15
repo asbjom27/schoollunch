@@ -3,17 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2月給食献立ビューアー（A献立）</title>
+    <title>給食献立ビューアー</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="hero">
       <p class="kicker">亀岡市立学校給食センター</p>
-      <h1>2月 給食献立ビューアー（A献立）</h1>
+      <h1 id="pageTitle">給食献立ビューアー</h1>
       <p class="subtitle">日付・料理名で探しやすく、栄養値もすぐ確認できます。</p>
     </header>
 
     <main class="container">
+      <section class="month-tabs-wrap" aria-label="月の切り替え">
+        <div id="monthTabs" class="month-tabs"></div>
+      </section>
+
       <section class="controls" aria-label="検索・絞り込み">
         <label class="control">
           <span>料理名検索</span>
@@ -46,7 +50,7 @@
       <section class="source">
         <h2>元データ</h2>
         <p>PDF原本も確認できます。</p>
-        <a href="menu-source.pdf" target="_blank" rel="noopener noreferrer">給食2月こんだて（A献立）PDFを開く</a>
+        <a id="pdfLink" href="menu-source.pdf" target="_blank" rel="noopener noreferrer">献立PDFを開く</a>
       </section>
     </main>
 

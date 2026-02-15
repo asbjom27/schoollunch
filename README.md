@@ -1,46 +1,57 @@
-# 2月給食献立ビューアー（A献立）
+# 給食献立ビューアー
 
-PDFから読み取った献立を、日付ごとのカード形式で見やすく表示するシンプルなWebアプリです。
+PDFから読み取った献立を、日付ごとのカード形式で見やすく表示するWebアプリです。
 
-## 使い方
-
-1. ターミナルでプロジェクトに移動
-2. 簡易サーバーを起動
+## ローカル起動
 
 ```bash
 cd '/Users/mba/Documents/New project'
 python3 -m http.server 8000
 ```
 
-3. ブラウザで以下を開く
+ブラウザ:
+- http://127.0.0.1:8000
 
-- http://localhost:8000
+## 追加した機能
 
-## GitHub Pagesで公開
+- 月タブ切り替え（`data/menu-data.json` 内の複数月を自動表示）
+- 検索/曜日フィルタ
+- スマホ最適化（1カラム表示、44pxタップ領域、横スクロール月タブ）
+- PDF更新の半自動化スクリプト
 
-このプロジェクトは `.github/workflows/deploy-pages.yml` を追加済みなので、
-`main` ブランチにpushするとGitHub Pagesへ自動デプロイされます。
+## PDF更新の手順（半自動）
 
-### 手順
-
-1. GitHubで空のリポジトリを作成（例: `school-lunch-menu`）
-2. ローカルで以下を実行
+1. 新しいPDFを配置
+2. 変換スクリプトを実行
 
 ```bash
 cd '/Users/mba/Documents/New project'
-git add .
-git commit -m "Add lunch menu web app and Pages deploy workflow"
-git branch -M main
-git remote add origin https://github.com/<your-name>/<repo>.git
-git push -u origin main
+python3 tools/update_from_pdf.py \
+  --pdf '/path/to/new-menu.pdf' \
+  --month 2025-03 \
+  --course A \
+  --title '3月 給食献立ビューアー（A献立）' \
+  --pdf-link 'menu-source-2025-03-a.pdf' \
+  --out data/menu-data.json
 ```
 
-3. GitHub側で `Settings > Pages` を開き、`Source` を `GitHub Actions` にする
-4. Actionsの `Deploy static site to GitHub Pages` が成功したら公開URLにアクセス
+3. 生成された `data/menu-data.json` の `dishes`/`staple` を目視で微調整
 
-## ファイル
+注記:
+- 栄養値・日付は高精度で拾います。
+- 料理名と主食はPDFのレイアウト依存が大きいので、最終確認が必要です。
 
-- `index.html`: 画面
+## GitHub Pages公開
+
+`main` ブランチにpushで自動デプロイされます（`.github/workflows/deploy-pages.yml`）。
+
+公開URL:
+- https://asbjom27.github.io/schoollunch/
+
+## 主要ファイル
+
+- `index.html`: UI
 - `styles.css`: スタイル
-- `script.js`: 献立データと検索ロジック
-- `menu-source.pdf`: 元PDF
+- `script.js`: 描画とフィルタ
+- `data/menu-data.json`: 献立データ
+- `tools/update_from_pdf.py`: PDF変換スクリプト
