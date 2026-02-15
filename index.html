@@ -41,6 +41,7 @@
 
       <section class="summary" aria-live="polite">
         <p><strong id="resultCount"></strong></p>
+        <p id="voteBackendStatus" class="vote-backend-status"></p>
       </section>
 
       <section>
@@ -65,10 +66,11 @@
 
         <ul class="dishes"></ul>
 
-        <section class="rating" aria-label="Feedback">
-          <p class="rating-title">Feedback</p>
+        <section class="rating" aria-label="評価入力">
+          <p class="rating-title">感想</p>
           <div class="rating-actions"></div>
-          <p class="rating-state">Not rated</p>
+          <p class="rating-state">未評価</p>
+          <p class="rating-total">おいしい 0 / おいしくない 0</p>
         </section>
 
         <dl class="nutrition">
@@ -88,6 +90,7 @@
       </article>
     </template>
 
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

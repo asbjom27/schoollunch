@@ -119,6 +119,11 @@ button {
   color: var(--sub);
 }
 
+.vote-backend-status {
+  margin: 6px 0 0;
+  font-size: 0.86rem;
+}
+
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
@@ -209,6 +214,12 @@ button {
   color: #6b7280;
 }
 
+.rating-total {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
 .nutrition {
   margin: 0;
   border-top: 1px dashed var(--line);
@@ -261,7 +272,7 @@ button {
   background: #fff;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .controls {
     grid-template-columns: 1fr;
     padding: 14px;
@@ -284,6 +295,10 @@ button {
   .month-tab {
     padding: 8px 12px;
     font-size: 0.85rem;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
   }
 
   .menu-grid {
