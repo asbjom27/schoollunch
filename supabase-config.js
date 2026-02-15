@@ -3,6 +3,6 @@ window.APP_CONFIG = {
   // Example:
   // supabaseUrl: "https://xxxx.supabase.co",
   // supabaseAnonKey: "eyJ...",
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://oznduxbphcbalyzqxfbr.supabase.co",
+  supabaseAnonKey: "sb_publishable_Vc6bRR09zOLGBdHNxvRcDA_RScO-joe",
 };
